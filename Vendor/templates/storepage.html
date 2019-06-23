@@ -1,7 +1,7 @@
-{% if products %}
+{% if slots %}
     <ul>
-    {% for product in products %}
-    <li>{{ product.productName }} - {{product.price}} - {{product.quantity}}</li>
+    {% for slot in slots %}
+    <li>{{slot.product.productName }} - {{slot.product.price}} - {{slot.quantity}} - {{slot.slotNr}}</li>
     {% endfor %}
     </ul>
 	

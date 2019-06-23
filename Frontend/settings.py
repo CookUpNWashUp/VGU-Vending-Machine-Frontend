@@ -19,6 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+# Added settings to the project
+BACKEND_API_URL = 'http://192.168.1.121:8000/hello'
+NFC_PIN_MAPPING = [5,6]
+TIME_TO_DISPENSE = 3
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'm-oi+0xpy@cg(ii5d^e$8m2c&w1!&1cyu_4e%vy28^^d-*yvpw'
 

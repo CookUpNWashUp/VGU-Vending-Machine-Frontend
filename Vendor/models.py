@@ -12,7 +12,7 @@ class Price(models.Model):
     def get_absolute_url(self):
         return reverse('pricetag',args=[str(self.id)])
 
-class Discount (models.Model):
+class Discount(models.Model):
     discountAmount = models.FloatField(default=0)
     discountExpired = models.DateTimeField(default=timezone.now()+datetime.timedelta(days=1),null=True,blank=True)
     discountCreated= models.DateTimeField(default=timezone.now)
@@ -30,12 +30,21 @@ class Product(models.Model):
     productName= models.CharField(max_length=50, help_text='Product Name')
     price = models.ForeignKey(Price, on_delete = models.CASCADE)
     discount = models.ForeignKey(Discount, on_delete = models.CASCADE, null=True,blank=True)
-    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return self.productName
 
     def get_absolute_url(self):
         return reverse('product-detail',args=[str(self.id)])
-    
 
+#The slot to pin dictionary will be hardwired in settings.py
+class Slot(models.Model):
+    product = models.ForeignKey(Product, on_delete = models.CASCADE)
+    slotNr = models.IntegerField(default=0,unique=True)
+    quantity = models.IntegerField(default=1)
+
+    def get_absolute_url(self):
+        return reverse('slot', args=[str(self.id)])
+
+    def __srt__(self):
+        return str(self.product.productName + self.slotNr)
