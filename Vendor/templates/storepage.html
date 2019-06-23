@@ -1,0 +1,19 @@
+{% if products %}
+    <ul>
+    {% for product in products %}
+    <li>{{ product.productName }} - {{product.price}} - {{product.quantity}}</li>
+    {% endfor %}
+    </ul>
+	
+	<form action="" method="post">
+		{% csrf_token %}
+		<table>
+		{{ form.as_table }}
+		</table>
+		<input type="submit" value="Submit">
+	</form>
+{% endif %}
+
+{% if status %}
+	{{status}}
+{% endif %}
