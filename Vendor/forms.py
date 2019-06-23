@@ -4,8 +4,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 class Order(forms.Form):
-    querySet = Product.objects.all()
-    product = forms.ModelChoiceField(querySet, to_field_name='productName')
+    #querySet = Product.objects.all()
+    #product = forms.ModelChoiceField(querySet, to_field_name='productName')
     amount = forms.IntegerField(help_text='how many?')
     slot = forms.IntegerField(help_text='which slot?')
     #need to look up how many chars are supported in the user model

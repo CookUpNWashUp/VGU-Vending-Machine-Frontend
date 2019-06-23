@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 import requests
 from requests.auth import HTTPBasicAuth
 from .models import Product,Slot
@@ -31,16 +31,24 @@ def index(request):
                     if(status == 1):
                         status = 'Failed - Insufficient Fund'
                     elif(status == 0):
-                        #orderedSlot = get_object_or_404(Slot,slotNr=form.cleaned_data['slotNr'])
-                        #orderedSlot.quantity = orderedSlot.quantity - form.cleaned_data['amount']
-                        for i in range(form.cleaned_data['amount']):
-                            dispense(form.cleaned_data['slot'])
-                        status = 'OK'
+                        orderedSlot = get_object_or_404(Slot,slotNr__exact=form.cleaned_data['slot'])
+                        if (orderedSlot.quantity >= form.cleaned_data['amount']):
+                            orderedSlot.quantity = orderedSlot.quantity - form.cleaned_data['amount']
+                            for i in range(form.cleaned_data['amount']):
+                                dispense(form.cleaned_data['slot'])
+                            status = 'You ordered '+str(form.cleaned_data['amount'])+' ' + orderedSlot.product.productName +' from slot #' +str(orderedSlot.slotNr)
+                            orderedSlot.save()
+                        else:
+                            status = 'Failed - Insufficient quantity'
                 elif (r.status_code == 401):
                     status = 'Failed - 401'
             except:
                 status = 'Failed - Many things can cause this'
+                #raise
             context ={'status': status}
     return render(request, 'storepage.html',context)
 
-
+def querytest(request, slotNumber):
+    #inventory = Slot.objects.get(slotNr__exact=2)
+    inventory = get_object_or_404(Slot,slotNr__exact=slotNumber)
+    return HttpResponse('{}'.format(inventory.quantity))
