@@ -46,5 +46,5 @@ class Slot(models.Model):
     def get_absolute_url(self):
         return reverse('slot', args=[str(self.id)])
 
-    def __srt__(self):
-        return str(self.product.productName + self.slotNr)
+    def __str__(self):
+        return str(self.product.productName + '-' + str(self.slotNr))

@@ -77,11 +77,24 @@ WSGI_APPLICATION = 'Frontend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# Migrated to MySQL. Will keep this here just in case
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE':'django.db.backends.mysql',
+        'NAME': 'django',
+        'USER': 'admin',
+        'PASSWORD':'admin',
+        'PORT':'',
     }
 }
 

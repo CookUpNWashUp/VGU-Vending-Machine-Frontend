@@ -9,8 +9,9 @@ class Order(forms.Form):
     amount = forms.IntegerField(help_text='how many?')
     slot = forms.IntegerField(help_text='which slot?')
     #need to look up how many chars are supported in the user model
+    #username = forms.CharField(max_length=50,strip=True,widget=forms.TextInput(attrs={'id':'username'}))
     username = forms.CharField(max_length=50,strip=True)
-    password = forms.CharField(max_length=50,strip=True)
+    password = forms.CharField(max_length=50,strip=True,widget=forms.PasswordInput)
 
     def clean_username(self):
         #No validations yet, to be added later
@@ -27,4 +28,17 @@ class Order(forms.Form):
     def clean_slot(self):
         #If slot number exceeds 26 the form should return an error
         data = self.cleaned_data['slot']
+        return data
+
+class Creds(forms.Form):
+    username = forms.CharField(max_length=50,strip=True)
+    password = forms.CharField(max_length=50,strip=True,widget=forms.PasswordInput)
+
+    def clean_username(self):
+        #No validations yet, to be added later
+        data = self.cleaned_data['username']
+        return data
+    def clean_password(self):
+        #No validations yet, to be added later
+        data = self.cleaned_data['password']
         return data

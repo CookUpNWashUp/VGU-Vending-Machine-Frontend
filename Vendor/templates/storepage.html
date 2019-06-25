@@ -1,19 +1,84 @@
-{% if slots %}
-    <ul>
-    {% for slot in slots %}
-    <li>{{slot.product.productName }} - {{slot.product.price}} - {{slot.quantity}} - {{slot.slotNr}}</li>
-    {% endfor %}
-    </ul>
-	
-	<form action="" method="post">
-		{% csrf_token %}
-		<table>
-		{{ form.as_table }}
-		</table>
-		<input type="submit" value="Submit">
-	</form>
-{% endif %}
+{% load static %}
+<!DOCTYPE html>
 
-{% if status %}
-	{{status}}
-{% endif %}
+<html lang="en">
+
+	<head>
+		<title>Main Menu</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+
+		<!-- jQuery library -->
+		<script src="{% static 'jquery-3.4.1.min.js' %}"></script>
+
+		<!-- Popper JS -->
+		<script src="{% static 'popper.min.js' %}"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+		
+		<!-- Keyboard thingy -->
+		<link rel="stylesheet" href="{% static 'keyboard/css/keyboard.css' %}">
+		<script src="{% static 'jquery.keyboard.js' %}"></script>
+		
+		<!-- Jquery-UI -->
+		<link rel="stylesheet" href="{% static 'jquery-ui.min.css' %}">
+		<script src="{% static 'jquery-ui-custom.min.js' %}"></script>
+
+		<script>
+			$(function(){
+				$('#id_username').keyboard();
+				$('#id_password').keyboard();
+				$('#id_amount')
+					.keyboard({
+						layout : 'num',
+						restrictInput : true, // Prevent keys not in the displayed keyboard from being typed in
+						preventPaste : true,  // prevent ctrl-v and right click
+						autoAccept : true
+				})
+					
+				$('#id_slot')
+					.keyboard({
+						layout : 'num',
+						restrictInput : true, // Prevent keys not in the displayed keyboard from being typed in
+						preventPaste : true,  // prevent ctrl-v and right click
+						autoAccept : true
+					})
+					.addTyping();
+
+			});
+		</script>
+	</head>
+	<body>
+		<div class="main-container" id="main-page">
+			<!-- Title -->
+			<div class="jumbotron jumbotron-fluid" id="title">
+			  <h1 style="text-align:center">Vending Machine</h1>
+			</div>
+		</div>
+		<div>
+		{% if slots %}
+			<ul>
+			{% for slot in slots %}
+			<li>{{slot.product.productName }} - {{slot.product.price}} - {{slot.quantity}} - {{slot.slotNr}}</li>
+			{% endfor %}
+			</ul>
+			
+			<form action="" method="post">
+				{% csrf_token %}
+				<table>
+				{{ form.as_table }}
+				</table>
+				<input type="submit" value="Submit">
+			</form>
+		{% endif %}
+
+		{% if status %}
+			{{status}}
+		{% endif %}
+		</div>
+	</body>
+</html>
