@@ -18,4 +18,5 @@ Code run on the Raspberry Pi, run on a Django + MariaDB stack. The idea is to ru
 - [ ] Add css + js. Split up view if necessary
 - [ ] NFC websocket server
 - [ ] Websocket dialog box for 2FA token
+- [ ] Add startup shell script
 - [ ] Clean up code
