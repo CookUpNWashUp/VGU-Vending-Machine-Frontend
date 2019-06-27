@@ -1,5 +1,4 @@
 {% load static %}
-{% load widget_tweaks %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -153,52 +152,10 @@
 				<div class="col-sm-4">	
 					<form action="" method="post">
 						{% csrf_token %}
-						{% for hidden in form.hidden_fields %}
-							{{ hidden }}
-						{% endfor %}
-						<div id="accordion">
-							<div class="card">
-								<div class="card-header">
-									<a class="card-link" data-toggle="collapse" href="#collapseOne">
-										1. Creds
-									</a>
-								</div>
-								<div id="collapseOne" class="collapse show" data-parent="#accordion">
-									<div class="card-body">
-										{{form.username.label_tag}}
-										{{form.username | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
-										{{form.password.label_tag}}
-										{{form.password | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
-									</div>
-								</div>
-								
-								<div class="card-header">
-									<a class="card-link" data-toggle="collapse" href="#collapseTwo">
-										2. Order
-									</a>
-								</div>
-								<div id="collapseTwo" class="collapse" data-parent="#accordion">
-									<div class="card-body">
-										{{form.slot.label_tag}}
-										{{form.slot | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
-										{{form.amount.label_tag}}
-										{{form.amount | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!--
 						<table>
 						{{ form.as_table }}
 						</table>
-						-->
-						<div class="form-group">
-							<input type="submit" type="submit" class="btn btn-success" value="Submit">
-						</div>
+						<input type="submit" value="Submit">
 					</form>
 				{% endif %}
 				</div>

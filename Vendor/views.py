@@ -1,9 +1,10 @@
 from django.shortcuts import render,get_object_or_404
+from django.http import HttpResponseRedirect
 import requests
 from requests.auth import HTTPBasicAuth
 from .models import Product,Slot
 from django.http import HttpResponse
-from .forms import Order
+from .forms import Order,Creds
 from django.conf import settings
 import json
 from .dispense import dispense
@@ -47,6 +48,18 @@ def index(request):
                 #raise
             context ={'status': status}
     return render(request, 'storepage.html',context)
+
+def login(request):
+    if (request.method == 'GET'):
+        form = Creds(initial=initialValues)
+        context = {'form':form}
+        return render(request,'login.html',context)
+    elif (request.method == 'POST'):
+        form = Creds(request.POST)
+        return HttpResponseRedirect('/order/'+form.cleaned_data['username']+'/'+form.cleaned_data['password'])
+
+def order(request,username,password):
+    return True
 
 def querytest(request, slotNumber):
     #inventory = Slot.objects.get(slotNr__exact=2)

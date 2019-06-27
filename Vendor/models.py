@@ -15,7 +15,7 @@ class Price(models.Model):
 class Discount(models.Model):
     discountAmount = models.FloatField(default=0)
     discountExpired = models.DateTimeField(default=timezone.now()+datetime.timedelta(days=1),null=True,blank=True)
-    discountCreated= models.DateTimeField(default=timezone.now)
+    #discountCreated= models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return str(self.discountAmount)

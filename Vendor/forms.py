@@ -6,8 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 class Order(forms.Form):
     #querySet = Product.objects.all()
     #product = forms.ModelChoiceField(querySet, to_field_name='productName')
-    amount = forms.IntegerField(help_text='how many?')
-    slot = forms.IntegerField(help_text='which slot?')
+    #amount = forms.IntegerField(help_text='how many?')
+    #slot = forms.IntegerField(help_text='which slot?')
+    amount = forms.IntegerField()
+    slot = forms.IntegerField()
     #need to look up how many chars are supported in the user model
     #username = forms.CharField(max_length=50,strip=True,widget=forms.TextInput(attrs={'id':'username'}))
     username = forms.CharField(max_length=50,strip=True)
