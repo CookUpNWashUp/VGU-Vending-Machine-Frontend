@@ -28,6 +28,9 @@
 		<!-- Jquery-UI -->
 		<link rel="stylesheet" href="{% static 'jquery-ui.min.css' %}">
 		<script src="{% static 'jquery-ui-custom.min.js' %}"></script>
+		
+		<!-- Jquery form plugin -->
+		<script src="{% static 'jquery.form.js' %}"></script>
 
 		<script>
 			$(function(){
@@ -151,7 +154,7 @@
 					</table>
 				</div>	
 				<div class="col-sm-4">	
-					<form action="" method="post">
+					<form id='jsonForm' action="" method="post">
 						{% csrf_token %}
 						{% for hidden in form.hidden_fields %}
 							{{ hidden }}
@@ -197,15 +200,55 @@
 						</table>
 						-->
 						<div class="form-group">
-							<input type="submit" type="submit" class="btn btn-success" value="Submit">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Submit</button>
+						</div>
+					
+						<div class="modal fade" id="myModal" role="dialog">
+							<div class="modal-dialog">
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title">Security token</h4>
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+									</div>
+									<div class="modal-body">
+										<p>Hold your phone up to the reader until it beeps and click OK.</p>
+									</div>
+									<div class="modal-footer">
+										<button id='submitBtn' type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">OK</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</form>
+					
+					<script>
+						document.getElementById('submitBtn').onclick = startWebsock;
+						
+						function startWebsock(){
+							var ws = new WebSocket("ws://"+window.location.hostname+":8001/");
+							tokenField = document.getElementById('id_token');
+							ws.onmessage = function(event){
+								tokenField.value = event.data;
+								ws.close(1000,"Bye");
+								document.getElementById('jsonForm').submit();
+							};
+							if (tokenField.value=="ERROR"){
+								alert("Error reading NFC token. Please contact admin");
+								
+							}
+				
+						}					
+					</script>
 				{% endif %}
 				</div>
 			</div>
 		{% if status %}
 			{{status}}
-		{% endif %}
+			<br><br><br>
+			<a class="btn btn-primary" href="/Vendor/">Back</a>
+		{% endif %}	
 		</div>
+		
 	</body>
 </html>

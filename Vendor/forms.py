@@ -14,6 +14,8 @@ class Order(forms.Form):
     #username = forms.CharField(max_length=50,strip=True,widget=forms.TextInput(attrs={'id':'username'}))
     username = forms.CharField(max_length=50,strip=True)
     password = forms.CharField(max_length=50,strip=True,widget=forms.PasswordInput)
+    #Token is temporary not required for testing
+    token  = forms.CharField(max_length=6,strip=True,widget=forms.HiddenInput,required=False)
 
     def clean_username(self):
         #No validations yet, to be added later
@@ -31,6 +33,11 @@ class Order(forms.Form):
         #If slot number exceeds 26 the form should return an error
         data = self.cleaned_data['slot']
         return data
+    def clean_token(self):
+        #No validations yet, to be added later
+        data = self.cleaned_data['token']
+        return data
+
 
 class Creds(forms.Form):
     username = forms.CharField(max_length=50,strip=True)
