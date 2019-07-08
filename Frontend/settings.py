@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Added settings to the project
 BACKEND_API_URL = 'http://192.168.1.121:8000/hello/'
-NFC_PIN_MAPPING = [5,6]
+NFC_PIN_MAPPING = [8,9,10,11]
 TIME_TO_DISPENSE = 3
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'm-oi+0xpy@cg(ii5d^e$8m2c&w1!&1cyu_4e%vy28^^d-*yvpw'
@@ -29,7 +29,7 @@ SECRET_KEY = 'm-oi+0xpy@cg(ii5d^e$8m2c&w1!&1cyu_4e%vy28^^d-*yvpw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.122']
+ALLOWED_HOSTS = ['192.168.1.122','127.0.0.1']
 
 
 # Application definition

@@ -4,7 +4,8 @@ Code run on the Raspberry Pi, run on a Django + MariaDB stack. The idea is to ru
 
 ## Installation
 1. Install virtualenv and set up a new environment. Google how.
-1. ```pip3 install django RPi.GPIO gpiozero mysqlserver websockets```
+1  ```sudo apt install python3-dev libmysqlclient-dev```
+1. ```pip3 install django django-widget-tweaks RPi.GPIO gpiozero mysqlclient websockets requests sqlparse```
 1. Start a new project. The project name I chose is called Frontend. 
 1. ```git clone https://github.com/CookUpNWashUp/VGU-Vending-Machine-Frontend.git```
 1. Install and install libnfc. This website relies on the ```nfc-mfultralight```tool, look it up on Google.
@@ -22,7 +23,7 @@ Code run on the Raspberry Pi, run on a Django + MariaDB stack. The idea is to ru
 - [x] NFC websocket server
 - [x] Websocket dialog box for 2FA token
 - [ ] Add backend - frontend database replication
-- [ ] Adjust admin rights
-- [ ] Add startup shell script
+- [x] Adjust admin rights
+- [x] Add startup shell script
 - [ ] Add install script
 - [ ] Clean up code

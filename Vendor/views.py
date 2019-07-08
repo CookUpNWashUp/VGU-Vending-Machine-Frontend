@@ -4,7 +4,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from .models import Product,Slot
 from django.http import HttpResponse,JsonResponse
-from .forms import Order,Creds
+from .forms import Order
 from django.conf import settings
 import json
 from .dispense import dispense
@@ -18,12 +18,12 @@ ERROR_INSUFFICIENT_FUND = 'Failed - Insufficient Fund'
 ERROR_INSUFFICIENT_QUANTITY = 'Failed - Insufficient Quantity'
 ERROR_BACKEND = 'Failed - 401'
 ERROR_OTHERS = 'Failed - Many things can cause this'
+ERROR_DUMB = 'Don\'t waste your time buying nothing'
 
 def index(request):
     if (request.method == 'GET'):
         slots = Slot.objects.order_by('slotNr')
-        initialValues = {'amount':0}
-        form = Order(initial=initialValues)
+        form = Order()
         context = {'form':form,'slots':slots}
     elif (request.method == 'POST'):
         form = Order(request.POST)
@@ -55,21 +55,13 @@ def index(request):
             except:
                 status = ERROR_OTHERS
                 #raise
-            context ={'status': status}
+            #context ={'status': status}
             #return status
+        else:
+            status=form.errors
+            #print(form.errors['slot'])
+        context ={'status': status}
     return render(request, 'storepage.html',context)
-
-def login(request):
-    if (request.method == 'GET'):
-        form = Creds(initial=initialValues)
-        context = {'form':form}
-        return render(request,'login.html',context)
-    elif (request.method == 'POST'):
-        form = Creds(request.POST)
-        return HttpResponseRedirect('/order/'+form.cleaned_data['username']+'/'+form.cleaned_data['password'])
-
-def order(request,username,password):
-    return True
 
 def querytest(request, slotNumber):
     #inventory = Slot.objects.get(slotNr__exact=2)
