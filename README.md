@@ -4,7 +4,7 @@ Code run on the Raspberry Pi, run on a Django + MariaDB stack. The idea is to ru
 
 ## Installation
 1. Install virtualenv and set up a new environment. Google how.
-1  ```sudo apt install python3-dev libmysqlclient-dev```
+1.  ```sudo apt install python3-dev libmysqlclient-dev```
 1. ```pip3 install django django-widget-tweaks RPi.GPIO gpiozero mysqlclient websockets requests sqlparse```
 1. Start a new project. The project name I chose is called Frontend. 
 1. ```git clone https://github.com/CookUpNWashUp/VGU-Vending-Machine-Frontend.git```
