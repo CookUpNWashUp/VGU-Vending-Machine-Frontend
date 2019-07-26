@@ -32,94 +32,6 @@
 		<!-- Jquery form plugin -->
 		<script src="{% static 'jquery.form.js' %}"></script>
 
-		<script>
-			$(function(){
-				$('#id_username').keyboard({
-					layout: 'qwerty',
-					css: {
-						// input & preview
-						input: 'form-control input-sm',
-						// keyboard container
-						container: 'center-block dropdown-menu', // jumbotron
-						// default state
-						buttonDefault: 'btn btn-default',
-						// hovered button
-						buttonHover: 'btn-primary',
-						// Action keys (e.g. Accept, Cancel, Tab, etc);
-						// this replaces "actionClass" option
-						buttonAction: 'active',
-						// used when disabling the decimal button {dec}
-						// when a decimal exists in the input area
-						buttonDisabled: 'disabled'
-					}
-				});
-				$('#id_password').keyboard({
-					layout: 'qwerty',
-					css: {
-						// input & preview
-						input: 'form-control input-sm',
-						// keyboard container
-						container: 'center-block dropdown-menu', // jumbotron
-						// default state
-						buttonDefault: 'btn btn-default',
-						// hovered button
-						buttonHover: 'btn-primary',
-						// Action keys (e.g. Accept, Cancel, Tab, etc);
-						// this replaces "actionClass" option
-						buttonAction: 'active',
-						// used when disabling the decimal button {dec}
-						// when a decimal exists in the input area
-						buttonDisabled: 'disabled'
-					}
-				});
-				$('#id_amount').keyboard({
-					layout : 'num',
-					restrictInput : true, // Prevent keys not in the displayed keyboard from being typed in
-					preventPaste : true,  // prevent ctrl-v and right click
-					autoAccept : true,
-					css: {
-						// input & preview
-						input: 'form-control input-sm',
-						// keyboard container
-						container: 'center-block dropdown-menu', // jumbotron
-						// default state
-						buttonDefault: 'btn btn-default',
-						// hovered button
-						buttonHover: 'btn-primary',
-						// Action keys (e.g. Accept, Cancel, Tab, etc);
-						// this replaces "actionClass" option
-						buttonAction: 'active',
-						// used when disabling the decimal button {dec}
-						// when a decimal exists in the input area
-						buttonDisabled: 'disabled'
-					}					
-				})
-					
-				$('#id_slot').keyboard({
-					layout : 'num',
-					restrictInput : true, // Prevent keys not in the displayed keyboard from being typed in
-					preventPaste : true,  // prevent ctrl-v and right click
-					autoAccept : true,
-					css: {
-						// input & preview
-						input: 'form-control input-sm',
-						// keyboard container
-						container: 'center-block dropdown-menu', // jumbotron
-						// default state
-						buttonDefault: 'btn btn-default',
-						// hovered button
-						buttonHover: 'btn-primary',
-						// Action keys (e.g. Accept, Cancel, Tab, etc);
-						// this replaces "actionClass" option
-						buttonAction: 'active',
-						// used when disabling the decimal button {dec}
-						// when a decimal exists in the input area
-						buttonDisabled: 'disabled'
-					}					
-					})
-
-			});
-		</script>
 	</head>
 	<body>
 		<div class="main-container" id="main-page">
@@ -132,7 +44,7 @@
 			<div class="row">
 				<div class = "col-sm-8">
 				{% if slots %}
-					<table class="table table-striped">
+					<table class="table table-hover">
 						<thead>
 							<tr>
 								<th>Slot number</th>
@@ -143,7 +55,7 @@
 						</thead>
 						<tbody>
 							{% for slot in slots %}
-							<tr>
+							<tr class="table-row" data-value="{{slot.slotNr}}">
 								<td>{{slot.slotNr}}</td>
 								<td>{{slot.product.productName }}</td>
 								<td>{{slot.quantity}}</td>
@@ -171,29 +83,45 @@
 										{{form.username.label_tag}}
 										{{form.username | add_class:'form-control'}}
 										<span class="help-block">{{ form.username.error }}</span>
-										{{form.password.label_tag}}
+										<!-- {{form.password.label_tag}}
 										{{form.password | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
+										<span class="help-block">{{ form.username.error }}</span> -->
 									</div>
 								</div>
-								
 								<div class="card-header">
 									<a class="card-link" data-toggle="collapse" href="#collapseTwo">
-										2. Order
+										Click the slot and pick an amount
 									</a>
 								</div>
-								<div id="collapseTwo" class="collapse" data-parent="#accordion">
+								<div id="collapseTwo" class="collapse show" data-parent="#accordion">
 									<div class="card-body">
 										{{form.slot.label_tag}}
 										{{form.slot | add_class:'form-control'}}
 										<span class="help-block">{{ form.username.error }}</span>
-										{{form.amount.label_tag}}
+									<!--	{{form.amount.label_tag}}
 										{{form.amount | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
+										<span class="help-block">{{ form.username.error }}</span>-->
+									</div>
+									<div class="card-body">
+										{{form.amount.label_tag}}
+										<div class="input-group">
+											<span class="input-group-btn">
+												<button id="decrease" type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="amount">
+													-
+												</button>
+											</span>
+											{{form.amount | attr:"name:amount" | add_class:'form-control input-number' | attr:"value:1" | attr:"min:1" }}
+											<span class="input-group-btn">
+												<button id="increase" type="button" class="btn btn-success btn-number" data-type="plus" data-field="amount">
+													+
+												</button>
+											</span>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						
 						<!--
 						<table>
 						{{ form.as_table }}
@@ -223,7 +151,29 @@
 					</form>
 					
 					<script>
+						$(document).ready(function($) {
+							$(".table-row").click(function() {
+								document.getElementById('id_slot').value = $(this).data("value");
+							});
+						});
 						document.getElementById('submitBtn').onclick = startWebsock;
+						document.getElementById('decrease').onclick = decrease;
+						document.getElementById('increase').onclick = increase;
+						
+						function increase(){
+							var value = parseInt(document.getElementById('id_amount').value, 10);
+							value = isNaN(value) ? 0 : value;
+							value++;
+							document.getElementById('id_amount').value = value;
+						}
+						
+						function decrease(){
+							var value = parseInt(document.getElementById('id_amount').value, 10);
+							value = isNaN(value) ? 0 : value;
+							value++;
+							document.getElementById('id_amount').value = value;
+						}
+						
 						
 						function startWebsock(){
 							var ws = new WebSocket("ws://"+window.location.hostname+":8001/");

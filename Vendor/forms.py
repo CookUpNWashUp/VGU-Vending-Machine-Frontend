@@ -16,7 +16,7 @@ class Order(forms.Form):
     #need to look up how many chars are supported in the user model
     #username = forms.CharField(max_length=50,strip=True,widget=forms.TextInput(attrs={'id':'username'}))
     username = forms.CharField(max_length=50,strip=True)
-    password = forms.CharField(max_length=50,strip=True,widget=forms.PasswordInput)
+    password = forms.CharField(required=False,max_length=50,strip=True,widget=forms.PasswordInput)
     token  = forms.CharField(max_length=6,strip=True,widget=forms.HiddenInput,required=True)
 
     def clean_username(self):

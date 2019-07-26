@@ -6,7 +6,9 @@ import websockets
 fileName = 'dump.mfd'
 
 async def producerHandler(websocket,path):
-    msg= await readCard()
+
+    #msg= await readCard()
+    msg = await readCardRaw()
     await websocket.send(msg)
 async def readCard():
     token='ERROR'
@@ -23,6 +25,15 @@ async def readCard():
                         token=record.text
     return token
 
+async def readCardRaw():
+    token='ERROR'
+    returnCode = subprocess.call(['nfc-mfultralight','r','dump.mfd'])
+    if (returnCode == 0):
+        with open(fileName, 'rb') as f:
+            dump = f.read()
+            token = dump[16:22].decode('ascii')
+            print(token)
+    return token
 server = websockets.serve(producerHandler,'0.0.0.0',8001)
 asyncio.get_event_loop().run_until_complete(server)
 asyncio.get_event_loop().run_forever()

@@ -28,8 +28,10 @@ class Discount(models.Model):
 
 class Product(models.Model):
     productName= models.CharField(max_length=50, help_text='Product Name')
-    price = models.ForeignKey(Price, on_delete = models.CASCADE)
-    discount = models.ForeignKey(Discount, on_delete = models.CASCADE, null=True,blank=True)
+    #price = models.ForeignKey(Price, on_delete = models.CASCADE)
+    price = models.IntegerField(default=0)
+    productId = models.IntegerField(default=0,unique=True)
+    #discount = models.ForeignKey(Discount, on_delete = models.CASCADE, null=True,blank=True)
 
     def __str__(self):
         return self.productName

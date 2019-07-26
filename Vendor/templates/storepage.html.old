@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -27,10 +28,13 @@
 		<!-- Jquery-UI -->
 		<link rel="stylesheet" href="{% static 'jquery-ui.min.css' %}">
 		<script src="{% static 'jquery-ui-custom.min.js' %}"></script>
+		
+		<!-- Jquery form plugin -->
+		<script src="{% static 'jquery.form.js' %}"></script>
 
 		<script>
 			$(function(){
-				$('#id_username').keyboard({
+				/*$('#id_username').keyboard({
 					layout: 'qwerty',
 					css: {
 						// input & preview
@@ -48,7 +52,29 @@
 						// when a decimal exists in the input area
 						buttonDisabled: 'disabled'
 					}
-				});
+				});*/
+				$('#id_username').keyboard({
+					layout : 'num',
+					restrictInput : true, // Prevent keys not in the displayed keyboard from being typed in
+					preventPaste : true,  // prevent ctrl-v and right click
+					autoAccept : true,
+					css: {
+						// input & preview
+						input: 'form-control input-sm',
+						// keyboard container
+						container: 'center-block dropdown-menu', // jumbotron
+						// default state
+						buttonDefault: 'btn btn-default',
+						// hovered button
+						buttonHover: 'btn-primary',
+						// Action keys (e.g. Accept, Cancel, Tab, etc);
+						// this replaces "actionClass" option
+						buttonAction: 'active',
+						// used when disabling the decimal button {dec}
+						// when a decimal exists in the input area
+						buttonDisabled: 'disabled'
+					}					
+				})
 				$('#id_password').keyboard({
 					layout: 'qwerty',
 					css: {
@@ -150,19 +176,101 @@
 					</table>
 				</div>	
 				<div class="col-sm-4">	
-					<form action="" method="post">
+					<form id='jsonForm' action="" method="post">
 						{% csrf_token %}
+						{% for hidden in form.hidden_fields %}
+							{{ hidden }}
+						{% endfor %}
+						<div id="accordion">
+							<div class="card">
+								<div class="card-header">
+									<a class="card-link" data-toggle="collapse" href="#collapseOne">
+										1. Creds
+									</a>
+								</div>
+								<div id="collapseOne" class="collapse show" data-parent="#accordion">
+									<div class="card-body">
+										{{form.username.label_tag}}
+										{{form.username | add_class:'form-control'}}
+										<!--<span class="help-block">{{ form.username.error }}</span>
+										{{form.password.label_tag}}
+										{{form.password | add_class:'form-control'}}
+										<span class="help-block">{{ form.password.error }}</span> -->
+									</div>
+								</div>
+								
+								<div class="card-header">
+									<a class="card-link" data-toggle="collapse" href="#collapseTwo">
+										2. Order
+									</a>
+								</div>
+								<div id="collapseTwo" class="collapse" data-parent="#accordion">
+									<div class="card-body">
+										{{form.slot.label_tag}}
+										{{form.slot | add_class:'form-control'}}
+										<span class="help-block">{{ form.username.error }}</span>
+										{{form.amount.label_tag}}
+										{{form.amount | add_class:'form-control'}}
+										<span class="help-block">{{ form.username.error }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--
 						<table>
 						{{ form.as_table }}
 						</table>
-						<input type="submit" value="Submit">
+						-->
+						<div class="form-group">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Submit</button>
+						</div>
+					
+						<div class="modal fade" id="myModal" role="dialog">
+							<div class="modal-dialog">
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title">Security token</h4>
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+									</div>
+									<div class="modal-body">
+										<p>Hold your phone up to the reader until it beeps and click OK.</p>
+									</div>
+									<div class="modal-footer">
+										<button id='submitBtn' type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">OK</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
+					
+					<script>
+						document.getElementById('submitBtn').onclick = startWebsock;
+						
+						function startWebsock(){
+							var ws = new WebSocket("ws://"+window.location.hostname+":8001/");
+							tokenField = document.getElementById('id_token');
+							ws.onmessage = function(event){
+								tokenField.value = event.data;
+								ws.close(1000,"Bye");
+								document.getElementById('jsonForm').submit();
+							};
+							if (tokenField.value=="ERROR"){
+								alert("Error reading NFC token. Please contact admin");
+								
+							}
+				
+						}					
+					</script>
 				{% endif %}
 				</div>
 			</div>
 		{% if status %}
 			{{status}}
-		{% endif %}
+			<br><br><br>
+			<a class="btn btn-primary" href="/Vendor/">Back</a>
+		{% endif %}	
 		</div>
+		
 	</body>
 </html>

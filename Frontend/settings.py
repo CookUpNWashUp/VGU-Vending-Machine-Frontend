@@ -20,7 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # Added settings to the project
-BACKEND_API_URL = 'http://192.168.1.121:8000/hello/'
+MACHINE_ID=1
+BACKEND_TRANSACTION_API_URL = 'http://192.168.1.121:8000/api/make-transaction'
+BACKEND_DATA_API_URL = 'http://192.168.1.121:8000/api/get-products-info'
 NFC_PIN_MAPPING = [8,9,10,11]
 TIME_TO_DISPENSE = 3
 # SECURITY WARNING: keep the secret key used in production secret!

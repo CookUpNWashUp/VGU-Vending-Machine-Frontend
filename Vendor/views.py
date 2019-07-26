@@ -13,38 +13,59 @@ from .dispense import dispense
 
 #BACKEND_API_URL='http://192.168.1.121:8000/hello'
 
-SUCCESS = 'You ordered {} {} from slot #{}' 
+SUCCESS = 'You ordered {} {} from slot #{}. Your balance is {}' 
 ERROR_INSUFFICIENT_FUND = 'Failed - Insufficient Fund'
 ERROR_INSUFFICIENT_QUANTITY = 'Failed - Insufficient Quantity'
+ERROR_WRONG_CREDS = 'Failed - Username or token is invalid'
+ERROR_NO_PRODUCT = 'Failed - Product not found'
 ERROR_BACKEND = 'Failed - 401'
 ERROR_OTHERS = 'Failed - Many things can cause this'
 ERROR_DUMB = 'Don\'t waste your time buying nothing'
 
 def index(request):
     if (request.method == 'GET'):
-        slots = Slot.objects.order_by('slotNr')
+        slots = Slot.objects.filter(quantity__gt=0).order_by('slotNr')
         form = Order()
         context = {'form':form,'slots':slots}
     elif (request.method == 'POST'):
         form = Order(request.POST)
         if form.is_valid():
             try:
-                auth = HTTPBasicAuth(form.cleaned_data['username'],form.cleaned_data['password'])
-                r = requests.get(settings.BACKEND_API_URL, auth = auth)
-                print(form.cleaned_data['token'])
+                orderedSlot = get_object_or_404(Slot,slotNr__exact=form.cleaned_data['slot'])
+                #Form json for the request here
+                reqData = {
+                            'userId':form.cleaned_data['username'],
+                            'token':form.cleaned_data['token'],
+                            'deviceId':settings.MACHINE_ID,
+                            'productIds':[{
+                                'productId':orderedSlot.product.productId,
+                                'amount':form.cleaned_data['amount']
+                                }]
+                        }
+                reqJSON = json.dumps(reqData)
+                print(reqJSON)
+                headers = {'Content-Type':'application/json'}
+                #Make the requrest
+                #auth = HTTPBasicAuth(form.cleaned_data['username'],form.cleaned_data['password'])
+                r = requests.post(settings.BACKEND_TRANSACTION_API_URL, headers=headers,data=reqJSON)
                 if (r.status_code == 200):
                     apiRep = r.content
-                    jsonData = json.loads(apiRep.decode('ascii'))
-                    status = jsonData['status']
+                    jsonData = json.loads(apiRep.decode('ascii'))['data']
+                    print(jsonData)
+                    status = jsonData['TransactionStatus']
                     if(status == 1):
                         status = ERROR_INSUFFICIENT_FUND
+                    elif(status == 2):
+                        status = ERROR_WRONG_CREDS
+                    elif(status == 3):
+                        status = ERROR_NO_PRODUCT
                     elif(status == 0):
-                        orderedSlot = get_object_or_404(Slot,slotNr__exact=form.cleaned_data['slot'])
+                        #orderedSlot = get_object_or_404(Slot,slotNr__exact=form.cleaned_data['slot'])
                         if (orderedSlot.quantity >= form.cleaned_data['amount']):
                             orderedSlot.quantity = orderedSlot.quantity - form.cleaned_data['amount']
                             '''for i in range(form.cleaned_data['amount']):
                                 dispense(form.cleaned_data['slot'])'''
-                            status = SUCCESS.format(str(form.cleaned_data['amount']),orderedSlot.product.productName,str(orderedSlot.slotNr))
+                            status = SUCCESS.format(str(form.cleaned_data['amount']),orderedSlot.product.productName,str(orderedSlot.slotNr),jsonData['balance'])
                             orderedSlot.save()
                         else:
                             status = ERROR_INSUFFICIENT_QUANTITY
