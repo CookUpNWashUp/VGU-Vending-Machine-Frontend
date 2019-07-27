@@ -8,7 +8,7 @@ Code run on the Raspberry Pi, run on a Django + MariaDB stack. The idea is to ru
 1. ```pip3 install django django-widget-tweaks RPi.GPIO gpiozero mysqlclient websockets requests sqlparse```
 1. Start a new project. The project name I chose is called Frontend. 
 1. ```git clone https://github.com/CookUpNWashUp/VGU-Vending-Machine-Frontend.git```
-1. Install and install libnfc. This website relies on the ```nfc-mfultralight```tool, look it up on Google.
+1. Install libnfc. This website relies on the a custom version of```nfc-mfultralight```tool, look it up on Google. Best way to install is just to replace the C source code included with this app in the ```utils``` folder.
 1. Setup your PN352 with any configuration on the Rasp Pi. I used the SPI config.
 1. Run the websocket server in the NFC dir. I tested the page on a remote host instead of local so there might be potential problems. Switch up the settings.py if you have to.
 1. Add things, break things, have fun
