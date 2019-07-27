@@ -7,9 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 # Register your models here.
 # Once Master-Slave replication has been setup, local admin will lose control over
 # Product and Price.
-admin.site.register(Discount)
-admin.site.register(Product)
-admin.site.register(Price)
+#admin.site.register(Discount)
+#admin.site.register(Product)
+#admin.site.register(Price)
 #admin.site.register(Slot)
 
 SLOT_ERROR='This slot is reserved for hardware and is not available'

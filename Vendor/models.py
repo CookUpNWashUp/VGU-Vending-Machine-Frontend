@@ -27,7 +27,7 @@ class Discount(models.Model):
         return self.Expired <= timezone.now()
 
 class Product(models.Model):
-    productName= models.CharField(max_length=50, help_text='Product Name')
+    productName= models.CharField(max_length=50, unique=True,help_text='Product Name')
     #price = models.ForeignKey(Price, on_delete = models.CASCADE)
     price = models.IntegerField(default=0)
     productId = models.IntegerField(default=0,unique=True)

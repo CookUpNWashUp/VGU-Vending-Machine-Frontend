@@ -74,21 +74,6 @@
 						<div id="accordion">
 							<div class="card">
 								<div class="card-header">
-									<a class="card-link" data-toggle="collapse" href="#collapseOne">
-										1. Creds
-									</a>
-								</div>
-								<div id="collapseOne" class="collapse show" data-parent="#accordion">
-									<div class="card-body">
-										{{form.username.label_tag}}
-										{{form.username | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span>
-										<!-- {{form.password.label_tag}}
-										{{form.password | add_class:'form-control'}}
-										<span class="help-block">{{ form.username.error }}</span> -->
-									</div>
-								</div>
-								<div class="card-header">
 									<a class="card-link" data-toggle="collapse" href="#collapseTwo">
 										Click the slot and pick an amount
 									</a>
@@ -128,7 +113,7 @@
 						</table>
 						-->
 						<div class="form-group">
-							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Submit</button>
+							<button  id='submitBtn' type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Submit</button>
 						</div>
 					
 						<div class="modal fade" id="myModal" role="dialog">
@@ -140,11 +125,11 @@
 										<button type="button" class="close" data-dismiss="modal">&times;</button>
 									</div>
 									<div class="modal-body">
-										<p>Hold your phone up to the reader until it beeps and click OK.</p>
+										<p>Hold your phone up to the reader until it beeps</p>
 									</div>
-									<div class="modal-footer">
-										<button id='submitBtn' type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">OK</button>
-									</div>
+									<!--<div class="modal-footer">
+										<button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">OK</button>
+									</div>-->
 								</div>
 							</div>
 						</div>
@@ -170,7 +155,7 @@
 						function decrease(){
 							var value = parseInt(document.getElementById('id_amount').value, 10);
 							value = isNaN(value) ? 0 : value;
-							value++;
+							value--;
 							document.getElementById('id_amount').value = value;
 						}
 						
@@ -178,15 +163,21 @@
 						function startWebsock(){
 							var ws = new WebSocket("ws://"+window.location.hostname+":8001/");
 							tokenField = document.getElementById('id_token');
+							uidField = document.getElementById('id_username');
 							ws.onmessage = function(event){
-								tokenField.value = event.data;
-								ws.close(1000,"Bye");
-								document.getElementById('jsonForm').submit();
-							};
-							if (tokenField.value=="ERROR"){
+								var webJSON = JSON.parse(event.data);
+								tokenField.value = webJSON['token'];
+								uidField.value = webJSON['uid'];
+								if (tokenField.value!="ERROR!"){
+									ws.close(1000,"Bye");
+									document.getElementById('jsonForm').submit();
+								}
+								else if (tokenField.value=="ERROR"){
 								alert("Error reading NFC token. Please contact admin");
 								
-							}
+								}
+							};
+							
 				
 						}					
 					</script>

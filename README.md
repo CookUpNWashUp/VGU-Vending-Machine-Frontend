@@ -22,7 +22,7 @@ Code run on the Raspberry Pi, run on a Django + MariaDB stack. The idea is to ru
 - [x] Add css + js. Split up view if necessary
 - [x] NFC websocket server
 - [x] Websocket dialog box for 2FA token
-- [ ] Add backend - frontend database replication
+- [x] Add backend - frontend database replication
 - [x] Adjust admin rights
 - [x] Add startup shell script
 - [ ] Add install script

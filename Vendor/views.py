@@ -8,6 +8,7 @@ from .forms import Order
 from django.conf import settings
 import json
 from .dispense import dispense
+from django.db import IntegrityError
 
 # Create your views here.
 
@@ -40,7 +41,7 @@ def index(request):
                             'productIds':[{
                                 'productId':orderedSlot.product.productId,
                                 'amount':form.cleaned_data['amount']
-                                }]
+                             }]
                         }
                 reqJSON = json.dumps(reqData)
                 print(reqJSON)
@@ -88,3 +89,37 @@ def querytest(request, slotNumber):
     #inventory = Slot.objects.get(slotNr__exact=2)
     inventory = get_object_or_404(Slot,slotNr__exact=slotNumber)
     return HttpResponse('{}'.format(inventory.quantity))
+
+def dataReplication(request,idList=[]):
+    #Get the data from backend API
+    reqData = {
+                'machine_id': settings.MACHINE_ID,
+                'product_ids': idList,
+            }
+    reqJSON = json.dumps(reqData)
+    headers = {'Content-Type':'application/json'}
+    r = requests.get(settings.BACKEND_DATA_API_URL, headers=headers,data=reqJSON)
+    #Parse data to database
+    if (r.status_code == 200):
+        code = r.status_code
+        apiRep = r.content
+        #This load has already converted all jsons in the array to dict
+        jsonData = json.loads(apiRep.decode('ascii'))['data']
+        #Error handling for invalid machine
+        if ('APIStatus' in jsonData):
+            code=500
+            return HttpResponse(code)
+        for entry in jsonData:
+            try:
+                product = Product.objects.get(productId=entry['id'])
+                product.productName = entry['product_name']
+                product.price = entry['price']
+                product.save()
+            except Product.DoesNotExist as e:
+                try:
+                    newEntry = Product(productId=entry['id'],productName=entry['product_name'],price=entry['price'])
+                    newEntry.save()
+                except IntegrityError as e:
+                    #code=e.__cause__
+                    code = 
+    return HttpResponse(code)
