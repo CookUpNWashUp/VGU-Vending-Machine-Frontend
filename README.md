@@ -18,9 +18,9 @@ Docker repo: <https://hub.docker.com/r/cookupnwashup/vgu-vending-machine-fronten
 1. Run the websocket server in the NFC dir. I tested the page on a remote host instead of local so there might be potential problems. Switch up the settings.py if you have to.
 1. Add things, break things, have fun
 
-##Docker
-1. Install docker-compose & docker with ```docker pull cookupnwashup/vgu-vending-machine-frontend```
-1. Make the container
+### Docker
+1. Install docker-compose & docker 
+1. ```docker pull cookupnwashup/vgu-vending-machine-frontend```
 1. Attach to the container and do migrations yourself. This version used SQLite for simplicity in creating the container
 1. Remember to enable SPI on your Pi. Do it by writing to ```/boot/config.txt``` or ```sudo rasppi-config```.
 1. Add things, break things, have fun
