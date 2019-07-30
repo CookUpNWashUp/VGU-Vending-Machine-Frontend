@@ -121,5 +121,5 @@ def dataReplication(request,idList=[]):
                     newEntry.save()
                 except IntegrityError as e:
                     #code=e.__cause__
-                    code = 
+                    code = 500 
     return HttpResponse(code)

@@ -1,0 +1,9 @@
+django>=2.2
+django-widget-tweaks
+rpi.gpio
+gpiozero
+mysqlclient
+websockets
+requests
+sqlparse
+ndeflib

@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+        web:
+                build: .
+                privileged: true
+                command: /bin/bash -c /www/Frontend/docker-entry.sh
+                ports:
+                        - "8001:8001"
+                        - "8000:8000"
