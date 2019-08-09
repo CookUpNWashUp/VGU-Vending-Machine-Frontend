@@ -6,7 +6,8 @@ import json
 
 fileName = 'dump.mfd'
 defaultName = 'default.mfd'
-nfcToolsPath = '/usr/local/bin/'
+#nfcToolsPath = '/usr/local/bin/'
+nfcToolsPath = subprocess.run(['which','nfc-mfultralight'],stdout=subprocess.PIPE).stdout.decode('ascii')[:-1]
 
 async def producerHandler(websocket,path):
     revertCardRaw()
@@ -20,7 +21,7 @@ async def producerHandler(websocket,path):
 
 async def readCard():
     token='ERROR'
-    returnCode = subprocess.call([nfcToolsPath+'/nfc-mfultralight','r',fileName])
+    returnCode = subprocess.call([nfcToolsPath,'r',fileName])
     if (returnCode == 0):
         with open(fileName, 'rb') as f:
             dump = f.read()
@@ -35,7 +36,7 @@ async def readCard():
 
 async def readCardRaw():
     token='ERROR'
-    returnCode = subprocess.call([nfcToolsPath+'nfc-mfultralight','r',fileName])
+    returnCode = subprocess.call([nfcToolsPath,'r',fileName])
     if (returnCode == 0):
         with open(fileName, 'rb') as f:
             dump = f.read()
@@ -48,7 +49,7 @@ async def readCardRaw():
     return data
 
 def revertCardRaw():
-    returnCode = subprocess.call([nfcToolsPath+'nfc-mfultralight','w',defaultName])
+    returnCode = subprocess.call([nfcToolsPath,'w',defaultName])
    
 server = websockets.serve(producerHandler,'0.0.0.0',8001)
 asyncio.get_event_loop().run_until_complete(server)
