@@ -35,13 +35,15 @@ async def readCard():
     return token
 
 async def readCardRaw():
-    token='ERROR'
+    token='ERROR!'
+    userId=0
+    data = json.dumps({'uid':userId,'token':token})
     returnCode = subprocess.call([nfcToolsPath,'r',fileName])
     if (returnCode == 0):
         with open(fileName, 'rb') as f:
             dump = f.read()
             token = dump[16:22].decode('ascii')
-            userId = int.from_bytes(dump[24:28],byteorder='little')
+            userId = int.from_bytes(dump[24:28],byteorder='big')
             data = json.dumps({'uid':userId,'token':token})
             print(data)
             #print('Token: ' + token)

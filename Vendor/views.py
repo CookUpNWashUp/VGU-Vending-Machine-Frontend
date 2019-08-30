@@ -16,7 +16,7 @@ from django.db import IntegrityError
 
 SUCCESS = 'You ordered {} {} from slot #{}. Your balance is {}' 
 ERROR_INSUFFICIENT_FUND = 'Failed - Insufficient Fund'
-ERROR_INSUFFICIENT_QUANTITY = 'Failed - Insufficient Quantity'
+ERROR_STATUS_ERROR = 'Failed - Status code not recognized'
 ERROR_WRONG_CREDS = 'Failed - Username or token is invalid'
 ERROR_NO_PRODUCT = 'Failed - Product not found'
 ERROR_BACKEND = 'Failed - 401'
@@ -61,15 +61,13 @@ def index(request):
                     elif(status == 3):
                         status = ERROR_NO_PRODUCT
                     elif(status == 0):
-                        #orderedSlot = get_object_or_404(Slot,slotNr__exact=form.cleaned_data['slot'])
-                        if (orderedSlot.quantity >= form.cleaned_data['amount']):
-                            orderedSlot.quantity = orderedSlot.quantity - form.cleaned_data['amount']
-                            '''for i in range(form.cleaned_data['amount']):
-                                dispense(form.cleaned_data['slot'])'''
-                            status = SUCCESS.format(str(form.cleaned_data['amount']),orderedSlot.product.productName,str(orderedSlot.slotNr),jsonData['balance'])
-                            orderedSlot.save()
-                        else:
-                            status = ERROR_INSUFFICIENT_QUANTITY
+                        orderedSlot.quantity = orderedSlot.quantity - form.cleaned_data['amount']
+                        '''for i in range(form.cleaned_data['amount']):
+                            dispense(form.cleaned_data['slot'])'''
+                        status = SUCCESS.format(str(form.cleaned_data['amount']),orderedSlot.product.productName,str(orderedSlot.slotNr),jsonData['balance'])
+                        orderedSlot.save()
+                    else:
+                        status = ERROR_STATUS_ERROR
                 elif (r.status_code == 401 or r.status_code == 404):
                     status = ERROR_BACKEND
                 else:
@@ -116,10 +114,11 @@ def dataReplication(request,idList=[]):
                 product.price = entry['price']
                 product.save()
             except Product.DoesNotExist as e:
+                newEntry = Product(productId=entry['id'],productName=entry['product_name'],price=entry['price'])
                 try:
-                    newEntry = Product(productId=entry['id'],productName=entry['product_name'],price=entry['price'])
                     newEntry.save()
                 except IntegrityError as e:
+                    Product.objects.get(productId=entry['id']).delete()
                     #code=e.__cause__
-                    code = 500 
+                    newEntry.save()
     return HttpResponse(code)

@@ -1,9 +1,11 @@
 from django import forms
+from django.shortcuts import get_object_or_404
 from .models import Product,Slot
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-AMOUNT_ERROR = 'Don\'t waste our time buying nothing'
+AMOUNT_NEGATIVE = 'Don\'t waste our time buying nothing'
+AMOUNT_LARGE = 'We don\'t have that much to sell'
 SLOT_ERROR = 'Don\'t waste your time ordering a slot having nothing'
 
 class Order(forms.Form):
@@ -27,12 +29,6 @@ class Order(forms.Form):
         #No validations yet, to be added later
         data = self.cleaned_data['password']
         return data
-    def clean_amount(self):
-        #No validations yet, to be added later
-        data = self.cleaned_data['amount']
-        if (data<=0):
-            raise ValidationError(_(AMOUNT_ERROR))
-        return data
     def clean_slot(self):
         #If slot number exceeds 26 the form should return an error
         data = self.cleaned_data['slot']
@@ -40,6 +36,16 @@ class Order(forms.Form):
             slot = Slot.objects.get(slotNr__exact=data)
         except Slot.DoesNotExist:
             raise ValidationError(_(SLOT_ERROR))
+        return data
+    def clean_amount(self):
+        #No validations yet, to be added later
+        data = self.cleaned_data['amount']
+        if (data<=0):
+            raise ValidationError(_(AMOUNT_NEGATIVE))
+        else:
+            orderedSlot = get_object_or_404(Slot,slotNr__exact=self.data['slot'])
+            if (data > orderedSlot.quantity):
+                raise ValidationError(_(AMOUNT_LARGE))
         return data
     def clean_token(self):
         #No validations yet, to be added later
